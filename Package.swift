@@ -5,24 +5,36 @@ import PackageDescription
 
 let package = Package(
     name: "ios-module-persister",
+    platforms: [.iOS(.v13)],
+
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
-            name: "ios-module-persister",
-            targets: ["ios-module-persister"]),
+            name: "PersisterProtocol",
+            targets: ["PersisterProtocol"]),
+
+        .library(
+            name: "RealmPersister",
+            targets: ["RealmPersister"]),
     ],
+
     dependencies: [
-        // Dependencies declare other packages that this package depends on.
-        // .package(url: /* package url */, from: "1.0.0"),
+        .package(url: "https://github.com/realm/realm-swift.git", from: "10.19.0"),
+        .package(url: "https://github.com/ResilienceCare/companion-ios-module-core.git", branch: "develop")
     ],
+
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
-            name: "ios-module-persister",
-            dependencies: []),
+            name: "PersisterProtocol",
+            dependencies: [.product(name: "CoreModule", package: "companion-ios-module-core")]),
+
+        .target(
+            name: "RealmPersister",
+            dependencies: ["PersisterProtocol",
+                .product(name: "RealmSwift", package: "realm-swift")]),
+
         .testTarget(
             name: "ios-module-persisterTests",
-            dependencies: ["ios-module-persister"]),
+            dependencies: ["RealmPersister"]),
     ]
 )
